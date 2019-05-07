@@ -7,6 +7,12 @@ import './glob.dart' as glob;
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 
+logout() async {
+  await FirebaseAuth.instance.signOut();
+  glob.uid = '';
+  print('logout');
+}
+
 class SignInPage extends StatefulWidget {
   SignInPage({Key key, this.title}) : super(key: key);
 
@@ -32,6 +38,8 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(glob.loginEmail);
+    
     final emailField = TextFormField(
       controller: _emailController,
       obscureText: false,
@@ -200,6 +208,7 @@ class _SignInPageState extends State<SignInPage> {
 
       setState(() {
         _login = true;
+        Navigator.pop(context);
       });
     } else {
       setState(() {
@@ -232,6 +241,7 @@ class _SignInPageState extends State<SignInPage> {
 
       setState(() {
         _login = true;
+        Navigator.pop(context);
       });
     } else {
       setState(() {

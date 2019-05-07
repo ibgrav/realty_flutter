@@ -3,6 +3,7 @@ library muddle.glob;
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -13,6 +14,11 @@ final secureStore = new FlutterSecureStorage();
 String userData = '';
 String loginEmail = '';
 String loginPass = '';
+String uid = '';
+
+pushMember(context, page) {
+  Navigator.of(context).push(new MaterialPageRoute(builder: (context) => page));
+}
 
 read(filename, old) async {
   print('READ');
@@ -40,6 +46,14 @@ save(filename, data) async {
   final text = data;
   await file.writeAsString(text);
   return true;
+}
+
+readCredentials() async {
+  Map<String, String> allValues = await secureStore.readAll();
+  print(allValues);
+
+  loginEmail = allValues['loginEmail'];
+  loginPass = allValues['loginPass'];
 }
 
 saveCredentials(email, pass) async {

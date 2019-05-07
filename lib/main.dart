@@ -5,14 +5,23 @@ import './glob.dart' as glob;
 import './auth.dart' as auth;
 
 void main() async {
+  var user = await auth.auth.currentUser();
 
-  // await glob.userDataFileCheck();
+  if (user != null) {
+    print(user.uid);
+    glob.uid = user.uid;
+    await glob.readCredentials();
+  } else {
+    print('not logged in');
+    glob.uid = '';
+    await glob.readCredentials();
+  }
   
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +29,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: auth.SignInPage(),
+      home: MyHomePage(title: 'Realty'),
     );
   }
 }
@@ -40,9 +49,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.supervised_user_circle),
+              onPressed: () async {
+                if(glob.uid == '') glob.pushMember(context, auth.SignInPage());
+                else await auth.logout();
+              },
+            ),
+          ],
       ),
       body: Center(
-        child: Text("FLUTTER"),
+        child: Text("Welcome " + glob.uid),
       ),
     );
   }
