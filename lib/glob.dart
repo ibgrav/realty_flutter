@@ -164,15 +164,23 @@ String createNewData() {
 
 TextStyle headStyle(int color) {
   return TextStyle(
-      fontFamily: 'Montserrat',
-      fontWeight: FontWeight.bold,
-      color: Color(color),
-      fontSize: 30.0);
+    fontFamily: 'Montserrat',
+    fontWeight: FontWeight.bold,
+    color: Color(color),
+    fontSize: 30.0,
+    shadows: <Shadow>[
+      Shadow(
+        offset: Offset(2, 2),
+        blurRadius: 3.0,
+        color: Color.fromARGB(155, 0, 0, 0),
+      ),
+    ],
+  );
 }
 
 TextStyle subHeadStyle(String color) {
   var returnColor = 0xFF425464;
-  if(color == 'light') returnColor = 0xFFEFEFEF;
+  if (color == 'light') returnColor = 0xFFEFEFEF;
 
   return TextStyle(
       fontFamily: 'Montserrat',

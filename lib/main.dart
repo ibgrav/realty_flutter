@@ -10,33 +10,48 @@ void main() async {
   runApp(MyApp());
 }
 
+mainLayout(context, title, back, bodyPage) {
+  Padding backArrow = back
+      ? Padding(
+          padding: EdgeInsets.only(left: 20),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
+          ),
+        )
+      : null;
+
+  return MaterialApp(
+    title: 'My Expense Tracker',
+    home: Scaffold(
+      backgroundColor: Color(0xFF5C748A),
+      appBar: AppBar(
+        leading: backArrow,
+        elevation: 0.0,
+        title: Text(
+          title,
+          style: glob.headStyle(0xFFEFEFEF),
+        ),
+        backgroundColor: Color(0xFF5C748A),
+        bottom: PreferredSize(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: Container(
+                decoration: glob.boxDec(0xFFEFEFEF),
+                height: 3.0,
+              ),
+            ),
+            preferredSize: Size.fromHeight(3.0)),
+      ),
+      body: bodyPage,
+    ),
+  );
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My Expense Tracker',
-      home: Scaffold(
-        backgroundColor: Color(0xFF5C748A),
-        appBar: AppBar(
-          elevation: 0.0,
-          title: Text(
-            'My Expense Tracker',
-            style: glob.headStyle(0xFFEFEFEF),
-          ),
-          backgroundColor: Color(0xFF5C748A),
-          bottom: PreferredSize(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child: Container(
-                  decoration: glob.boxDec(0xFFEFEFEF),
-                  height: 3.0,
-                ),
-              ),
-              preferredSize: Size.fromHeight(3.0)),
-        ),
-        body: MyHomePage(),
-      ),
-    );
+    return mainLayout(context, 'My Expense Tracker', false, MyHomePage());
   }
 }
 
@@ -89,8 +104,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 context: context,
                 builder: (_) => auth.LoginPopUp(),
               ).then((val) => setState(() {
-                authenticated = auth.authenticated ? true : false;
-              }));
+                    authenticated = auth.authenticated ? true : false;
+                  }));
             },
             child: Container(
               width: glob.width(context, 0.75),
@@ -114,14 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 40),
           GestureDetector(
             onTap: () {
-              setState(() {
-                incomeSelected = !incomeSelected;
-              });
-
-              showDialog(
-                context: context,
-                builder: (_) => OpenBox(),
-              );
+              glob.pushMember(context, IncomePage());
             },
             child: AnimatedContainer(
               duration: Duration(milliseconds: 250),
@@ -134,14 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 40),
           GestureDetector(
             onTap: () {
-              setState(() {
-                expenseSelected = !expenseSelected;
-              });
-
-              showDialog(
-                context: context,
-                builder: (_) => OpenBox(),
-              );
+              glob.pushMember(context, ExpensePage());
             },
             child: AnimatedContainer(
               duration: Duration(milliseconds: 250),
@@ -154,14 +155,7 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 40),
           GestureDetector(
             onTap: () {
-              setState(() {
-                reportSelected = !reportSelected;
-              });
-
-              showDialog(
-                context: context,
-                builder: (_) => OpenBox(),
-              );
+              glob.pushMember(context, ReportsPage());
             },
             child: AnimatedContainer(
               duration: Duration(milliseconds: 250),
@@ -389,5 +383,138 @@ class OpenBoxState extends State<OpenBox> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+}
+
+class IncomePage extends StatefulWidget {
+  IncomePage({Key key}) : super(key: key);
+
+  @override
+  _IncomePagePageState createState() => _IncomePagePageState();
+}
+
+class _IncomePagePageState extends State<IncomePage> {
+  String monthDropValue = 'May';
+  String yearDropValue = '2019';
+
+  @override
+  Widget build(BuildContext context) {
+    return mainLayout(
+      context,
+      'Income',
+      true,
+      SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(30, 40, 30, 40),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: glob.boxDec(0xFFEFEFEF),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            elevation: 0,
+                            iconSize: 40,
+                            style: glob.subHeadStyle('dark'),
+                            value: monthDropValue,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                monthDropValue = newValue;
+                              });
+                            },
+                            items: <String>[
+                              "Jan",
+                              "Feb",
+                              "Mar",
+                              "Apr",
+                              "May",
+                              "Jun",
+                              "Jul",
+                              "Aug",
+                              "Sep",
+                              "Oct",
+                              "Nov",
+                              "Dec"
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 20),
+                  Expanded(
+                    child: DecoratedBox(
+                      decoration: glob.boxDec(0xFFEFEFEF),
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                        child: DropdownButtonHideUnderline(
+                          child: DropdownButton<String>(
+                            isExpanded: true,
+                            elevation: 5,
+                            iconSize: 40,
+                            style: glob.subHeadStyle('dark'),
+                            value: yearDropValue,
+                            onChanged: (String newValue) {
+                              setState(() {
+                                yearDropValue = newValue;
+                              });
+                            },
+                            items: <String>["2018", "2019"]
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ExpensePage extends StatefulWidget {
+  ExpensePage({Key key}) : super(key: key);
+
+  @override
+  _ExpensePageState createState() => _ExpensePageState();
+}
+
+class _ExpensePageState extends State<ExpensePage> {
+  @override
+  Widget build(BuildContext context) {
+    return mainLayout(context, 'Expenses', true, Text('hey'));
+  }
+}
+
+class ReportsPage extends StatefulWidget {
+  ReportsPage({Key key}) : super(key: key);
+
+  @override
+  _ReportsPageState createState() => _ReportsPageState();
+}
+
+class _ReportsPageState extends State<ReportsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return mainLayout(context, 'Reports', true, Text('hey'));
   }
 }
