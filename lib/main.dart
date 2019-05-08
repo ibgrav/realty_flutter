@@ -5,31 +5,15 @@ import './glob.dart' as glob;
 import './auth.dart' as auth;
 
 void main() async {
-  var user = await auth.auth.currentUser();
-
-  if (user != null) {
-    print(user.uid);
-    glob.uid = user.uid;
-    await glob.readCredentials();
-  } else {
-    print('not logged in');
-    glob.uid = '';
-    await glob.readCredentials();
-  }
-  
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MyHomePage(title: 'Realty'),
+      title: 'My Expense Tracker',
+      home: MyHomePage(title: 'My Expense Tracker'),
     );
   }
 }
@@ -46,21 +30,41 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-        actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.supervised_user_circle),
-              onPressed: () async {
-                if(glob.uid == '') glob.pushMember(context, auth.SignInPage());
-                else await auth.logout();
-              },
+    return Container(
+      height: glob.height(context, 1),
+      width: glob.width(context, 1),
+      color: Color(0xFF5C748A),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.only(top: 50),
+              child: Center(
+                child: Material(
+                  color: Color(0x00),
+                  child: Text('My Expense Tracker',
+                      style: glob.headStyle(0xFFefefef)),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 40),
+              child: Container(
+                decoration: BoxDecoration(
+                  boxShadow: [
+                    new BoxShadow(
+                      color: Color(0x88888888),
+                      offset: new Offset(1, 1),
+                      blurRadius: 5,
+                    )
+                  ],
+                  color: Color(0xFFEFEFEF),
+                ),
+                height: 3,
+              ),
             ),
           ],
-      ),
-      body: Center(
-        child: Text("Welcome " + glob.uid),
+        ),
       ),
     );
   }

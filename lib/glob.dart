@@ -16,6 +16,14 @@ String loginEmail = '';
 String loginPass = '';
 String uid = '';
 
+width(context, double per) {
+  return (MediaQuery.of(context).size.width * per);
+}
+
+height(context, double per) {
+  return (MediaQuery.of(context).size.height * per);
+}
+
 pushMember(context, page) {
   Navigator.of(context).push(new MaterialPageRoute(builder: (context) => page));
 }
@@ -152,4 +160,12 @@ String createNewData() {
   }
 
   return jsonEncode(json);
+}
+
+TextStyle headStyle(int color) {
+  return TextStyle(
+      fontFamily: 'Montserrat',
+      fontWeight: FontWeight.bold,
+      color: Color(color),
+      fontSize: 30.0);
 }
