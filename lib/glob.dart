@@ -169,3 +169,28 @@ TextStyle headStyle(int color) {
       color: Color(color),
       fontSize: 30.0);
 }
+
+TextStyle subHeadStyle(String color) {
+  var returnColor = 0xFF425464;
+  if(color == 'light') returnColor = 0xFFEFEFEF;
+
+  return TextStyle(
+      fontFamily: 'Montserrat',
+      fontWeight: FontWeight.bold,
+      color: Color(returnColor),
+      fontSize: 24.0);
+}
+
+BoxDecoration boxDec(color) {
+  return BoxDecoration(
+    boxShadow: [
+      new BoxShadow(
+        color: Color(0x88000000),
+        offset: new Offset(1, 1),
+        blurRadius: 3,
+      )
+    ],
+    borderRadius: BorderRadius.circular(6),
+    color: Color(color),
+  );
+}
