@@ -10,7 +10,8 @@ void main() async {
   runApp(MyApp());
 }
 
-mainLayout(context, title, back, bodyPage) {
+mainLayout(var context, String title, bool back,
+    FloatingActionButton actionButton, Widget bodyPage) {
   Padding backArrow = back
       ? Padding(
           padding: EdgeInsets.only(left: 20),
@@ -44,6 +45,7 @@ mainLayout(context, title, back, bodyPage) {
             preferredSize: Size.fromHeight(3.0)),
       ),
       body: bodyPage,
+      floatingActionButton: actionButton,
     ),
   );
 }
@@ -51,7 +53,7 @@ mainLayout(context, title, back, bodyPage) {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return mainLayout(context, 'My Expense Tracker', false, MyHomePage());
+    return mainLayout(context, 'My Expense Tracker', false, null, MyHomePage());
   }
 }
 
@@ -338,54 +340,6 @@ Widget homeBox(title, color, content) {
   );
 }
 
-class OpenBox extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => OpenBoxState();
-}
-
-class OpenBoxState extends State<OpenBox> with SingleTickerProviderStateMixin {
-  AnimationController controller;
-  Animation<double> scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
-    scaleAnimation =
-        CurvedAnimation(parent: controller, curve: Curves.easeInToLinear);
-
-    controller.addListener(() {
-      setState(() {});
-    });
-
-    controller.forward();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Material(
-        color: Colors.transparent,
-        child: ScaleTransition(
-          scale: scaleAnimation,
-          child: Container(
-            decoration: ShapeDecoration(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(6.0))),
-            child: Padding(
-              padding: const EdgeInsets.all(50.0),
-              child: Text("Well hello there!"),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class IncomePage extends StatefulWidget {
   IncomePage({Key key}) : super(key: key);
 
@@ -399,92 +353,118 @@ class _IncomePagePageState extends State<IncomePage> {
 
   @override
   Widget build(BuildContext context) {
+    FloatingActionButton actionButton = FloatingActionButton(
+      onPressed: () {
+        // Add your onPressed code here!
+      },
+      child: Icon(Icons.add_circle_outline),
+      backgroundColor: Colors.pink,
+    );
+
     return mainLayout(
       context,
       'Income',
       true,
-      SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(30, 40, 30, 40),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: DecoratedBox(
-                      decoration: glob.boxDec(0xFFEFEFEF),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            elevation: 0,
-                            iconSize: 40,
-                            style: glob.subHeadStyle('dark'),
-                            value: monthDropValue,
-                            onChanged: (String newValue) {
-                              setState(() {
-                                monthDropValue = newValue;
-                              });
-                            },
-                            items: <String>[
-                              "Jan",
-                              "Feb",
-                              "Mar",
-                              "Apr",
-                              "May",
-                              "Jun",
-                              "Jul",
-                              "Aug",
-                              "Sep",
-                              "Oct",
-                              "Nov",
-                              "Dec"
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
+      actionButton,
+      Padding(
+        padding: EdgeInsets.fromLTRB(30, 40, 30, 40),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: DecoratedBox(
+                    decoration: glob.boxDec(0xFFEFEFEF),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          elevation: 0,
+                          iconSize: 40,
+                          style: glob.subHeadStyle('dark'),
+                          value: monthDropValue,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              monthDropValue = newValue;
+                            });
+                          },
+                          items: <String>[
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr",
+                            "May",
+                            "Jun",
+                            "Jul",
+                            "Aug",
+                            "Sep",
+                            "Oct",
+                            "Nov",
+                            "Dec"
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 20),
-                  Expanded(
-                    child: DecoratedBox(
-                      decoration: glob.boxDec(0xFFEFEFEF),
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            isExpanded: true,
-                            elevation: 5,
-                            iconSize: 40,
-                            style: glob.subHeadStyle('dark'),
-                            value: yearDropValue,
-                            onChanged: (String newValue) {
-                              setState(() {
-                                yearDropValue = newValue;
-                              });
-                            },
-                            items: <String>["2018", "2019"]
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
+                ),
+                SizedBox(width: 20),
+                Expanded(
+                  child: DecoratedBox(
+                    decoration: glob.boxDec(0xFFEFEFEF),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(20, 0, 10, 0),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          elevation: 5,
+                          iconSize: 40,
+                          style: glob.subHeadStyle('dark'),
+                          value: yearDropValue,
+                          onChanged: (String newValue) {
+                            setState(() {
+                              yearDropValue = newValue;
+                            });
+                          },
+                          items: <String>["2018", "2019"]
+                              .map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
                         ),
                       ),
                     ),
                   ),
-                ],
+                ),
+              ],
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: 40),
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  childAspectRatio: 2,
+                  padding: const EdgeInsets.all(4.0),
+                  mainAxisSpacing: 40.0,
+                  crossAxisSpacing: 20.0,
+                  scrollDirection: Axis.vertical,
+                  children: List.generate(100, (index) {
+                    return DecoratedBox(
+                      decoration: glob.boxDec(0xFFBDD9C0),
+                      child: Text('BOX'),
+                    );
+                  }),
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -499,9 +479,17 @@ class ExpensePage extends StatefulWidget {
 }
 
 class _ExpensePageState extends State<ExpensePage> {
+  FloatingActionButton actionButton = FloatingActionButton(
+    onPressed: () {
+      // Add your onPressed code here!
+    },
+    child: Icon(Icons.add_circle_outline),
+    backgroundColor: Colors.pink,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return mainLayout(context, 'Expenses', true, Text('hey'));
+    return mainLayout(context, 'Expenses', true, actionButton, Text('hey'));
   }
 }
 
@@ -513,8 +501,16 @@ class ReportsPage extends StatefulWidget {
 }
 
 class _ReportsPageState extends State<ReportsPage> {
+  FloatingActionButton actionButton = FloatingActionButton(
+    onPressed: () {
+      // Add your onPressed code here!
+    },
+    child: Icon(Icons.add_circle_outline),
+    backgroundColor: Colors.pink,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return mainLayout(context, 'Reports', true, Text('hey'));
+    return mainLayout(context, 'Reports', true, actionButton, Text('hey'));
   }
 }
