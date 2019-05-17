@@ -1,11 +1,9 @@
-library muddle.glob;
-
 import 'dart:io';
 import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -15,6 +13,25 @@ String userData = '';
 String loginEmail = '';
 String loginPass = '';
 String uid = '';
+
+var incomeData;
+var expenseData;
+
+final List<String> monthArray = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
+final List<String> incomeYears = ["2019"];
 
 width(context, double per) {
   return (MediaQuery.of(context).size.width * per);
@@ -94,7 +111,7 @@ userDataCloudSave(uid) async {
 }
 
 userDataFileCheck(uid) async {
-  var checkUserData = await read(uid, -1);
+  var checkUserData = await read(uid, 3);
   if (checkUserData == 'old' || checkUserData == 'err') {
     final StorageReference ref =
         FirebaseStorage.instance.ref().child('userData').child(uid + '.txt');
@@ -110,6 +127,9 @@ userDataFileCheck(uid) async {
   } else {
     userData = checkUserData;
   }
+  var json = await jsonDecode(userData);
+  incomeData = json['income'];
+  expenseData = json['expense'];
 }
 
 getHttp(url) async {

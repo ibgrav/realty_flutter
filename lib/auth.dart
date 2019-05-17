@@ -1,5 +1,3 @@
-library muddle.auth;
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -9,19 +7,8 @@ final FirebaseAuth auth = FirebaseAuth.instance;
 
 bool authenticated;
 
-asignUser() async {
-  var user = await auth.currentUser();
-
-  if (user != null)
-    authenticated = true;
-  else
-    authenticated = false;
-}
-
 logout() async {
   await FirebaseAuth.instance.signOut();
-  await asignUser();
-
   print('logout - authenticated: ' + authenticated.toString());
 }
 
@@ -51,7 +38,7 @@ class LoginPopUpState extends State<LoginPopUp>
     super.initState();
 
     controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 0));
     scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.linear);
 
     controller.addListener(() {
@@ -107,7 +94,6 @@ class LoginPopUpState extends State<LoginPopUp>
             });
 
             await _signInWithEmailAndPassword();
-            await asignUser();
 
             print("_login");
             print(_login);
@@ -135,7 +121,6 @@ class LoginPopUpState extends State<LoginPopUp>
             });
 
             await _register();
-            await asignUser();
 
             print("_login");
             print(_login);
@@ -168,7 +153,7 @@ class LoginPopUpState extends State<LoginPopUp>
     );
 
     return _isLoading
-        ? Center(child: CircularProgressIndicator())
+        ? Center()//Center(child: CircularProgressIndicator())
         : Center(
             child: Material(
               color: Colors.transparent,
@@ -252,5 +237,88 @@ class LoginPopUpState extends State<LoginPopUp>
         _isLoading = false;
       });
     }
+  }
+}
+
+class SettingsPopUp extends StatefulWidget {
+  SettingsPopUp({Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => SettingsPopUpState();
+}
+
+class SettingsPopUpState extends State<SettingsPopUp>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> scaleAnimation;
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 0));
+    scaleAnimation = CurvedAnimation(parent: controller, curve: Curves.linear);
+
+    controller.addListener(() {
+      setState(() {});
+    });
+
+    controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final logoutButton = Material(
+      elevation: 3.0,
+      borderRadius: BorderRadius.circular(6.0),
+      color: Color(0xFF5C748A),
+      child: MaterialButton(
+        height: 40,
+        minWidth: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+        onPressed: () async {
+          setState(() {
+            _isLoading = true;
+          });
+
+          await logout();
+
+          setState(() {
+            Navigator.pop(context);
+            _isLoading = false;
+          });
+        },
+        child: Text(
+          "Logout",
+          textAlign: TextAlign.center,
+          style: glob.subHeadStyle('light'),
+        ),
+      ),
+    );
+
+    return _isLoading
+        ? Center()//Center(child: CircularProgressIndicator())
+        : Center(
+            child: Material(
+              color: Colors.transparent,
+              child: ScaleTransition(
+                scale: scaleAnimation,
+                child: Container(
+                  height: glob.height(context, 0.5),
+                  width: glob.width(context, 0.85),
+                  decoration: ShapeDecoration(
+                      color: Color(0xFFEFEFEF),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(6))),
+                  child: Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      child: logoutButton),
+                ),
+              ),
+            ),
+          );
   }
 }
